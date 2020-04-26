@@ -1,6 +1,14 @@
 var givenToken = "";
 var dropletti;
 var sizes = [];
+var dropTable = document.getElementById("dropletsTable");
+var header = dropTable.createTHead();
+var headerValues = ["Id", "Name", "Status", "CPUs", "Memory", "Price", "size"];
+var row = header.insertRow(0);
+for (var i = 0; i < 7; i++) {
+    var cell = row.insertCell(i);
+    cell.innerHTML = headerValues[i];
+}
 
 function Dropletti(id, name, status, cpus, memory, price, slug) {
     this.id = id;
@@ -13,14 +21,14 @@ function Dropletti(id, name, status, cpus, memory, price, slug) {
 }
 const setToken = () => {
     givenToken = document.getElementById("token").value;
-    console.log(givenToken);
+    //console.log(givenToken);
     getDropletData();
     getSizes();
 }
 const getDropletData = () => {
     sendHttpRequest('GET', 'https://api.digitalocean.com/v2/droplets')
         .then(responseData => {
-            console.log(responseData);
+            //console.log(responseData);
             dropletti = new Dropletti(
                 responseData.droplets[0].id,
                 responseData.droplets[0].name,
@@ -30,7 +38,39 @@ const getDropletData = () => {
                 responseData.droplets[0].size.price_hourly,
                 responseData.droplets[0].size_slug
             )
-            document.getElementById("dropletsDisp").innerHTML = JSON.stringify(dropletti);
+            //document.getElementById("dropletsDisp").innerHTML = JSON.stringify(dropletti);
+
+            for (var i = 1; i < dropTable.rows.length;) {
+                dropTable.deleteRow(i);
+            }
+            //TODO: done after midnight refactor
+            var tempArr = [];
+            var tempValues = [];
+            for (var k in dropletti) {
+                tempArr.push(k);
+                if (dropletti.hasOwnProperty(k)) {
+                    var value = dropletti[k];
+                    tempValues.push(value);
+                }
+            }
+            //console.log(tempArr);
+            var isActive = false;
+            var row = dropTable.insertRow(-1);
+            for (var i = 0; i < tempArr.length; i++) {
+                var cell = row.insertCell(i);
+                var valuee = tempValues[i];
+
+                if (valuee == "active") {
+                    isActive = true;
+                }
+                cell.innerHTML = valuee;
+            }
+            var something;
+            if (isActive) {
+                something = document.getElementById("statusLight").style.backgroundColor = "green";
+            } else {
+                something = document.getElementById("statusLight").style.backgroundColor = "red";
+            }
         })
         .catch(err => {
             console.log(err, err.data);
@@ -79,13 +119,13 @@ const getBalance = () => {
 const getSizes = () => {
     sendHttpRequest('GET', 'https://api.digitalocean.com/v2/sizes')
         .then(responseData => {
-            console.log(responseData);
-            //TODO: make more flexible. Done in hurry
-            for (var i = 0; i < 20; i++) {
-                console.log(responseData.sizes[i].slug);
+            //console.log(responseData);
+            sizes = [];
+            for (var i = 0; i < responseData.sizes.length; i++) {
+                //console.log(responseData.sizes[i].slug);
                 sizes.push(responseData.sizes[i].slug);
             }
-            console.log(sizes);
+            //console.log(sizes);
             var dropsizes = document.getElementById("dropsizes");
             for (var i = 0; i < sizes.length; i++) {
                 var option = document.createElement("OPTION");

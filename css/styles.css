@@ -39,3 +39,17 @@ button:active {
     margin: 5rem;
     padding: 2rem;
 }
+
+table,
+td {
+    border: 1px solid #4a4057;
+}
+
+.statusLight {
+    height: 30px;
+    width: 30px;
+    background-color: rgb(0, 0, 0);
+    border-radius: 50%;
+    display: inline-block;
+    margin: 10px;
+}
