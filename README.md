@@ -1,4 +1,4 @@
-# Oceandash
+# Oceandashi
 
 Small dasboard to control your digitalocean droplet(s).
 
