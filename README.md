@@ -1,10 +1,10 @@
 # Avoriondash
 
-Small dasboard to control Avorion droplet(s).
+Small dasboard to control your digitalocean droplet(s).
 
 ### Usage
 
-1. Enter the authentication token
+1. Enter your authentication token
 2. Control server through buttons
 
 ### End goal is:
