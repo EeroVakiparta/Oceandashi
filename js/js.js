@@ -104,7 +104,7 @@ const shutDown = () => {
     var json = {
         "type": "shutdown"
     };
-    sendHttpRequest('POST', '/v2/droplets/' + dropletti.id + '/actions', json)
+    sendHttpRequest('POST', 'https://api.digitalocean.com/v2/droplets/' + dropletti.id + '/actions', json)
         .then(responseData => {
             console.log(responseData)
         })
@@ -125,7 +125,7 @@ const reSize = () => {
     var confirmationResult = confirm("Really resize to: " + selection + " ?")
     if (confirmationResult == true) {
         console.log("resize nao")
-        sendHttpRequest('POST', '/v2/droplets/' + dropletti.id + '/actions', json)
+        sendHttpRequest('POST', 'https://api.digitalocean.com/v2/droplets/' + dropletti.id + '/actions', json)
             .then(responseData => {
                 console.log(responseData)
             })
@@ -142,7 +142,7 @@ const powerOn = () => {
     var json = {
         "type": "power_on"
     };
-    sendHttpRequest('POST', '/v2/droplets/' + dropletti.id + '/actions', json)
+    sendHttpRequest('POST', 'https://api.digitalocean.com/v2/droplets/' + dropletti.id + '/actions', json)
         .then(responseData => {
             console.log(responseData)
         })
