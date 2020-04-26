@@ -1,18 +1,21 @@
 var givenToken = "";
 var dropletti;
+var sizes = [];
 
-function Dropletti(id, name, status, cpus, memory, price) {
+function Dropletti(id, name, status, cpus, memory, price, slug) {
     this.id = id;
     this.name = name;
     this.status = status;
     this.cpus = cpus;
     this.memory = memory;
     this.price = price;
+    this.slug = slug;
 }
 const setToken = () => {
     givenToken = document.getElementById("token").value;
     console.log(givenToken);
     getDropletData();
+    getSizes();
 }
 const getDropletData = () => {
     sendHttpRequest('GET', 'https://api.digitalocean.com/v2/droplets')
@@ -24,7 +27,8 @@ const getDropletData = () => {
                 responseData.droplets[0].status,
                 responseData.droplets[0].size.vcpus,
                 responseData.droplets[0].size.memory,
-                responseData.droplets[0].size.price_hourly
+                responseData.droplets[0].size.price_hourly,
+                responseData.droplets[0].size_slug
             )
             document.getElementById("dropletsDisp").innerHTML = JSON.stringify(dropletti);
         })
@@ -35,6 +39,7 @@ const getDropletData = () => {
 
 const getBalanceBtn = document.getElementById('balance-btn');
 const shutDownBtn = document.getElementById('shutdown-btn');
+const resizeBtn = document.getElementById('resize-btn');
 const powerOnBtn = document.getElementById('poweron-btn');
 
 
@@ -71,6 +76,30 @@ const getBalance = () => {
         });
 };
 
+const getSizes = () => {
+    sendHttpRequest('GET', 'https://api.digitalocean.com/v2/sizes')
+        .then(responseData => {
+            console.log(responseData);
+            //TODO: make more flexible. Done in hurry
+            for (var i = 0; i < 20; i++) {
+                console.log(responseData.sizes[i].slug);
+                sizes.push(responseData.sizes[i].slug);
+            }
+            console.log(sizes);
+            var dropsizes = document.getElementById("dropsizes");
+            for (var i = 0; i < sizes.length; i++) {
+                var option = document.createElement("OPTION");
+
+                option.innerHTML = sizes[i];
+                dropsizes.options.add(option);
+            }
+            //document.getElementById("dropletsDisp").innerHTML = JSON.stringify(responseData);
+        })
+        .catch(err => {
+            console.log(err, err.data);
+        });
+};
+
 const shutDown = () => {
     var json = {
         "type": "shutdown"
@@ -82,6 +111,31 @@ const shutDown = () => {
         .catch(err => {
             console.log(err, err.data);
         });
+};
+
+const reSize = () => {
+    var selectedSize = document.getElementById("dropsizes");
+    var selection = selectedSize.options[selectedSize.selectedIndex].value;
+    var json = {
+        "type": "resize",
+        "disk": false
+    };
+    json.size = selection;
+    console.log(json)
+    var confirmationResult = confirm("Really resize to: " + selection + " ?")
+    if (confirmationResult == true) {
+        console.log("resize nao")
+        sendHttpRequest('POST', '/v2/droplets/' + dropletti.id + '/actions', json)
+            .then(responseData => {
+                console.log(responseData)
+            })
+            .catch(err => {
+                console.log(err, err.data);
+            });
+    } else {
+        console.log("no resize plz")
+    }
+
 };
 
 const powerOn = () => {
@@ -99,4 +153,5 @@ const powerOn = () => {
 
 getBalanceBtn.addEventListener('click', getBalance);
 shutDownBtn.addEventListener('click', shutDown);
+resizeBtn.addEventListener('click', reSize);
 powerOnBtn.addEventListener('click', powerOn);
