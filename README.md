@@ -1,4 +1,4 @@
-# Avoriondash
+# Oceandash
 
 Small dasboard to control your digitalocean droplet(s).
 
@@ -17,3 +17,7 @@ Small dasboard to control your digitalocean droplet(s).
 
 - beautify
 - allow multiple droplets
+
+### WHY?
+
+To enable people without account credentials to manipulate server.
