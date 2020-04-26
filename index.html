@@ -1,25 +1,29 @@
-<!doctype html>
-
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
-
-  <title>Avontend</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Avorion Dashboard</title>
   <meta name="description" content="Avontend">
   <meta name="author" content="Arue">
-
   <link rel="stylesheet" href="css/styles.css">
-
+  <script src="js/js.js" defer></script>
 </head>
 
 <body>
-    <form>
-        <label for="token">TOKEN:</label><br>
-        <input type="text" id="token" name="token" size="50"><br>
-        <button id="button" onclick="getToken()">OK</button>
-    </form>
-
-
-  <script src="js/js.js"></script>
+  <section id="give-token" class="sections">
+    <label for="token"> AUTHENTICATION-TOKEN:</label><br>
+    <input type="text" id="token" name="token" size="60"><br><br>
+    <button id="button" onclick="setToken()">OK</button><br>
+    <p id="dropletsDisp"> </p>
+  </section>
+  <section id="avorion-dash" class="sections">
+    <button id="balance-btn">Account Balance</button><br><br>
+    <button id="shutdown-btn">Attempt shutdown</button><br><br>
+    <button id="poweron-btn">Power ON</button>
+  </section>
 </body>
+
 </html>

@@ -1,20 +1,102 @@
 var givenToken = "";
+var dropletti;
 
-function digital(){
-    var url = new URL("https://api.digitalocean.com/v2/droplets");
-    console.log(url);
-    fetch(url).then(response => {
-        console.log(response);
-        return response.json();
-    })
-    .then(responseData => {
-        console.log(responseData);
-    });
-
+function Dropletti(id, name, status, cpus, memory, price) {
+    this.id = id;
+    this.name = name;
+    this.status = status;
+    this.cpus = cpus;
+    this.memory = memory;
+    this.price = price;
 }
-
-function getToken(){
-    givenToken=document.getElementById("token").value;
+const setToken = () => {
+    givenToken = document.getElementById("token").value;
     console.log(givenToken);
+    getDropletData();
 }
+const getDropletData = () => {
+    sendHttpRequest('GET', 'https://api.digitalocean.com/v2/droplets')
+        .then(responseData => {
+            console.log(responseData);
+            dropletti = new Dropletti(
+                responseData.droplets[0].id,
+                responseData.droplets[0].name,
+                responseData.droplets[0].status,
+                responseData.droplets[0].size.vcpus,
+                responseData.droplets[0].size.memory,
+                responseData.droplets[0].size.price_hourly
+            )
+            document.getElementById("dropletsDisp").innerHTML = JSON.stringify(dropletti);
+        })
+        .catch(err => {
+            console.log(err, err.data);
+        });
+};
 
+const getBalanceBtn = document.getElementById('balance-btn');
+const shutDownBtn = document.getElementById('shutdown-btn');
+const powerOnBtn = document.getElementById('poweron-btn');
+
+
+
+const sendHttpRequest = (method, url, data) => {
+    return fetch(url, {
+        method: method,
+        body: JSON.stringify(data),
+        mode: 'cors',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + this.givenToken
+        }
+    }).then(response => {
+        if (response.status >= 400) {
+            return response.json().then(errResData => {
+                const error = new Error('DO Avorion exploded?!');
+                error.data = errResData;
+                throw error;
+            });
+        }
+        return response.json();
+    });
+};
+
+const getBalance = () => {
+    sendHttpRequest('GET', 'https://api.digitalocean.com/v2/customers/my/billing_history')
+        .then(responseData => {
+            console.log(responseData);
+            document.getElementById("dropletsDisp").innerHTML = JSON.stringify(responseData);
+        })
+        .catch(err => {
+            console.log(err, err.data);
+        });
+};
+
+const shutDown = () => {
+    var json = {
+        "type": "shutdown"
+    };
+    sendHttpRequest('POST', '/v2/droplets/' + dropletti.id + '/actions', json)
+        .then(responseData => {
+            console.log(responseData)
+        })
+        .catch(err => {
+            console.log(err, err.data);
+        });
+};
+
+const powerOn = () => {
+    var json = {
+        "type": "power_on"
+    };
+    sendHttpRequest('POST', '/v2/droplets/' + dropletti.id + '/actions', json)
+        .then(responseData => {
+            console.log(responseData)
+        })
+        .catch(err => {
+            console.log(err, err.data);
+        });
+};
+
+getBalanceBtn.addEventListener('click', getBalance);
+shutDownBtn.addEventListener('click', shutDown);
+powerOnBtn.addEventListener('click', powerOn);

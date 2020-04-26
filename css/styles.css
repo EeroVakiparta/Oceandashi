@@ -1,0 +1,41 @@
+html {
+    font-family: sans-serif;
+}
+
+body {
+    margin: 0;
+    background: #e5f6fc;
+    /* background: url(pixelGalaxy.png); */
+}
+
+button {
+    font: inherit;
+    background: #71848a;
+    border: 1px solid #71848a;
+    color: white;
+    border-radius: 28px;
+    cursor: pointer;
+    padding: 1.25rem 2.5rem;
+    font-size: 1.5rem;
+}
+
+button:focus {
+    outline: none;
+}
+
+button:hover {
+    background: #4a4057;
+    border-color: #4a4057;
+}
+
+button:active {
+    position: relative;
+    top: 1px;
+}
+
+.sections {
+    border: 2px solid #ccc;
+    border-radius: 28px;
+    margin: 5rem;
+    padding: 2rem;
+}
