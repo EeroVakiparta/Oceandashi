@@ -24,6 +24,7 @@ const setToken = () => {
     //console.log(givenToken);
     getDropletData();
     getSizes();
+    getBalance();
 }
 const getDropletData = () => {
     sendHttpRequest('GET', 'https://api.digitalocean.com/v2/droplets')
@@ -91,7 +92,9 @@ const sendHttpRequest = (method, url, data) => {
         mode: 'cors',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + this.givenToken
+            'Authorization': 'Bearer ' + this.givenToken,
+         //   'Accept': 'application/json'//,
+          //  'Origin':'http://localhost:3000'
         }
     }).then(response => {
         if (response.status >= 400) {
@@ -106,10 +109,13 @@ const sendHttpRequest = (method, url, data) => {
 };
 
 const getBalance = () => {
-    sendHttpRequest('GET', 'https://api.digitalocean.com/v2/customers/my/billing_history')
+    sendHttpRequest('GET', 'https://api.digitalocean.com/v2/customers/my/balance')
         .then(responseData => {
-            console.log(responseData);
-            document.getElementById("dropletsDisp").innerHTML = JSON.stringify(responseData);
+            //console.log(responseData);
+            //TODO:refactor done on bus
+            var accountBalance = JSON.stringify(responseData.month_to_date_balance);
+            accountBalance = accountBalance.replace('-','').replace(/"/g,'') + "€";
+            document.getElementById("balanceDisp").innerHTML = accountBalance;
         })
         .catch(err => {
             console.log(err, err.data);
