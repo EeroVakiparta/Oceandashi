@@ -1,6 +1,7 @@
 var givenToken = "";
 var dropletti;
 var sizes = [];
+var statusChanged = false;
 var dropTable = document.getElementById("dropletsTable");
 var header = dropTable.createTHead();
 var headerValues = ["Id", "Name", "Status", "CPUs", "Memory", "Price", "size"];
@@ -147,6 +148,7 @@ const getSizes = () => {
 };
 
 const shutDown = () => {
+    droplettiChangeChecker();
     var json = {
         "type": "shutdown"
     };
@@ -160,6 +162,7 @@ const shutDown = () => {
 };
 
 const reSize = () => {
+    droplettiChangeChecker();
     var selectedSize = document.getElementById("dropsizes");
     var selection = selectedSize.options[selectedSize.selectedIndex].value;
     var json = {
@@ -185,6 +188,7 @@ const reSize = () => {
 };
 
 const powerOn = () => {
+    droplettiChangeChecker();
     var json = {
         "type": "power_on"
     };
@@ -196,6 +200,29 @@ const powerOn = () => {
             console.log(err, err.data);
         });
 };
+
+//TODO: Refactor this ugly thing
+const droplettiChangeChecker = () => {
+    var oldStatus = dropletti.status;
+    var oldSlug = dropletti.slug;
+    console.log("oldStatus: " + oldStatus)
+    console.log("oldSize: " + oldSlug)
+    var dropletRefresh = setInterval(function(){ getDropletData();
+        var newStatus = dropletti.status;
+        var newSlug = dropletti.slug;
+        console.log("Fetched new droplett data ")
+    if(newStatus != oldStatus){
+        clearInterval(dropletRefresh);
+        console.log("Status changed: " + dropletti.status)
+    }
+    if(newSlug != oldSlug){
+        clearInterval(dropletRefresh);
+        console.log("Size changed: " + dropletti.size)
+    }
+    }, 7000);
+};
+
+
 
 getBalanceBtn.addEventListener('click', getBalance);
 shutDownBtn.addEventListener('click', shutDown);
