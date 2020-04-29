@@ -10,6 +10,8 @@ for (var i = 0; i < 7; i++) {
     var cell = row.insertCell(i);
     cell.innerHTML = headerValues[i];
 }
+var loaderShow = document.getElementById("loader");
+var statusShow = document.getElementById("statusLight");
 
 function Dropletti(id, name, status, cpus, memory, price, slug) {
     this.id = id;
@@ -84,8 +86,6 @@ const shutDownBtn = document.getElementById('shutdown-btn');
 const resizeBtn = document.getElementById('resize-btn');
 const powerOnBtn = document.getElementById('poweron-btn');
 
-
-
 const sendHttpRequest = (method, url, data) => {
     return fetch(url, {
         method: method,
@@ -115,8 +115,11 @@ const getBalance = () => {
             //console.log(responseData);
             //TODO:refactor done on bus
             var accountBalance = JSON.stringify(responseData.month_to_date_balance);
+            var dailyCost = dropletti.price * 24;
             accountBalance = accountBalance.replace('-','').replace(/"/g,'') + "€";
-            document.getElementById("balanceDisp").innerHTML = accountBalance;
+            document.getElementById("balanceDisp").innerHTML = "Total balance: " + accountBalance;
+            document.getElementById("dailyCostDisp").innerHTML = "Daily cost: " + dailyCost.toFixed(2) + "€/day";
+            
         })
         .catch(err => {
             console.log(err, err.data);
@@ -203,6 +206,8 @@ const powerOn = () => {
 
 //TODO: Refactor this ugly thing
 const droplettiChangeChecker = () => {
+    loaderShow.style.display = "block";
+    statusShow.style.display = "none";
     var oldStatus = dropletti.status;
     var oldSlug = dropletti.slug;
     console.log("oldStatus: " + oldStatus)
@@ -214,15 +219,17 @@ const droplettiChangeChecker = () => {
     if(newStatus != oldStatus){
         clearInterval(dropletRefresh);
         console.log("Status changed: " + dropletti.status)
+        loaderShow.style.display = "none";
+        statusShow.style.display = "inline-block";
     }
     if(newSlug != oldSlug){
         clearInterval(dropletRefresh);
         console.log("Size changed: " + dropletti.size)
+        loaderShow.style.display = "none";
+        statusShow.style.display = "inline-block";
     }
     }, 7000);
 };
-
-
 
 getBalanceBtn.addEventListener('click', getBalance);
 shutDownBtn.addEventListener('click', shutDown);
