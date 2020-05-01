@@ -60,17 +60,22 @@ td {
 }
 
 .loader {
-    border: 5px solid #71848a; 
-    border-top: 5px solid #000000; 
+    border: 5px solid #71848a;
+    border-top: 5px solid #000000;
     border-radius: 50%;
     width: 20px;
     height: 20px;
     display: none;
     animation: spin 2s linear infinite;
     margin-top: 10px;
-  }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

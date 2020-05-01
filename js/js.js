@@ -93,9 +93,7 @@ const sendHttpRequest = (method, url, data) => {
         mode: 'cors',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + this.givenToken,
-         //   'Accept': 'application/json'//,
-          //  'Origin':'http://localhost:3000'
+            'Authorization': 'Bearer ' + this.givenToken
         }
     }).then(response => {
         if (response.status >= 400) {
@@ -109,17 +107,19 @@ const sendHttpRequest = (method, url, data) => {
     });
 };
 
+//TODO: for some reason balance request is very picky. Fixed for now with cors-proxy. Come up with better solution.
+// see cors-anywhere.herokuapp.com
 const getBalance = () => {
-    sendHttpRequest('GET', 'https://api.digitalocean.com/v2/customers/my/balance')
+    sendHttpRequest('GET', 'https://cors-anywhere.herokuapp.com/https://api.digitalocean.com/v2/customers/my/balance')
         .then(responseData => {
             //console.log(responseData);
             //TODO:refactor done on bus
             var accountBalance = JSON.stringify(responseData.month_to_date_balance);
             var dailyCost = dropletti.price * 24;
-            accountBalance = accountBalance.replace('-','').replace(/"/g,'') + "€";
+            accountBalance = accountBalance.replace('-', '').replace(/"/g, '') + "€";
             document.getElementById("balanceDisp").innerHTML = "Total balance: " + accountBalance;
             document.getElementById("dailyCostDisp").innerHTML = "Daily cost: " + dailyCost.toFixed(2) + "€/day";
-            
+
         })
         .catch(err => {
             console.log(err, err.data);
@@ -212,22 +212,23 @@ const droplettiChangeChecker = () => {
     var oldSlug = dropletti.slug;
     console.log("oldStatus: " + oldStatus)
     console.log("oldSize: " + oldSlug)
-    var dropletRefresh = setInterval(function(){ getDropletData();
+    var dropletRefresh = setInterval(function () {
+        getDropletData();
         var newStatus = dropletti.status;
         var newSlug = dropletti.slug;
         console.log("Fetched new droplett data ")
-    if(newStatus != oldStatus){
-        clearInterval(dropletRefresh);
-        console.log("Status changed: " + dropletti.status)
-        loaderShow.style.display = "none";
-        statusShow.style.display = "inline-block";
-    }
-    if(newSlug != oldSlug){
-        clearInterval(dropletRefresh);
-        console.log("Size changed: " + dropletti.size)
-        loaderShow.style.display = "none";
-        statusShow.style.display = "inline-block";
-    }
+        if (newStatus != oldStatus) {
+            clearInterval(dropletRefresh);
+            console.log("Status changed: " + dropletti.status)
+            loaderShow.style.display = "none";
+            statusShow.style.display = "inline-block";
+        }
+        if (newSlug != oldSlug) {
+            clearInterval(dropletRefresh);
+            console.log("Size changed: " + dropletti.size)
+            loaderShow.style.display = "none";
+            statusShow.style.display = "inline-block";
+        }
     }, 7000);
 };
 
