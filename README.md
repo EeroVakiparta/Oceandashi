@@ -9,6 +9,7 @@ Small dasboard to control your digitalocean droplet(s).
 ##### Examples:
 
 Checking server account balance
+
 ```
 1. Enter your authentication token
 2. Press OK
@@ -16,6 +17,7 @@ Checking server account balance
 ```
 
 Changing a server size to save money
+
 ```
 # Note: steps for resizing and powering up the server take few minutes
 1. Enter your authentication token
@@ -29,17 +31,20 @@ Changing a server size to save money
 9. Server is up and running when status is back to Active / green
 ```
 
+![](css/GitHubREAMExample.PNG)
+
 ## End goal is:
 
+- Save money by resizing server
 - Check status
 - stop & start
-- resizes
 
 ## TODOs:
 
 - beautify
 - allow multiple droplets
 - add responsive features
+- "One button resize" (shutdown,resize,powerup)
 
 ## WHY?
 
